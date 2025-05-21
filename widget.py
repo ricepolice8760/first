@@ -9,7 +9,14 @@ if menu == "로그인":
     password = st.text_input("비밀번호", type='password')
     login = st.button("로그인")
     if login:
-        if username == "test" and password == "123":
+        conn = sqlite3.connect('db.db')
+        c = conn.cursor()
+
+        c.execute(f'''SELECT * FROM users WHERE username = '{username}'
+                  ''')
+        user = c.fetchone()
+        conn.close()
+        if username == user[1] and password == user[2]:
             st.subheader(username + "님 환영합니다.")
             st.balloons()
         else:
@@ -35,7 +42,7 @@ elif menu == "회원가입":
 
         c.execute(f'''
                 insert into users(username, password, email, gender, birthday, age)
-                values ('{username}', '{password}','{email}','{birthday}', {age})
+                values ('{username}', '{password}','{email}','{gender}','{birthday}', {age})
                 ''')
         conn.commit()
         conn.close()
